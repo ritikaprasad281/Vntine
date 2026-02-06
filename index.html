@@ -2,143 +2,175 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Valentine?</title>
+<title>For You ❤️</title>
+
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    background: linear-gradient(135deg, #ff758c, #ff7eb3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Arial', sans-serif;
-  }
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:black;
+  color:white;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  overflow:hidden;
+}
 
-  .card {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    position: relative;
-    width: 320px;
-  }
+.card{
+  max-width:500px;
+}
 
-  h1 {
-    margin-bottom: 30px;
-    color: #ff4d6d;
-  }
+.hidden{ display:none; }
 
-  button {
-    padding: 12px 25px;
-    font-size: 18px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    position: relative;
-  }
+button{
+  padding:12px 25px;
+  border:none;
+  border-radius:30px;
+  font-size:18px;
+  cursor:pointer;
+  margin:10px;
+}
 
-  #yesBtn {
-    background: #ff4d6d;
-    color: white;
-    margin-right: 10px;
-  }
+#yesBtn{ background:#ff4d6d; color:white; }
+#noBtn{ background:#ddd; position:absolute; }
 
-  #noBtn {
-    background: #ddd;
-    position: absolute;
-  }
+.envelope{
+  font-size:70px;
+  cursor:pointer;
+}
 
-  .celebrate {
-    display: none;
-    font-size: 22px;
-    color: #ff4d6d;
-  }
+.rose{
+  position:fixed;
+  top:-50px;
+  font-size:24px;
+  animation:fall 5s linear infinite;
+}
 
-  .hearts {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+@keyframes fall{
+  to{
+    transform:translateY(110vh) rotate(360deg);
+    opacity:0;
   }
-
-  .heart {
-    position: absolute;
-    color: red;
-    font-size: 20px;
-    animation: float 4s linear infinite;
-  }
-
-  @keyframes float {
-    0% {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-800px) scale(1.5);
-      opacity: 0;
-    }
-  }
+}
 </style>
 </head>
+
 <body>
 
-<div class="card" id="card">
-  <h1>Will you be my Valentine? 💌</h1>
-  <button id="yesBtn">Yes ❤️</button>
-  <button id="noBtn">No 🙃</button>
+<div class="card">
 
-  <div class="celebrate" id="celebrate">
-    🎉 YAYYYY!!! 🎉 <br><br>
-    Thank you for being mine 💖  
-    I’m really grateful for you.
-  </div>
+<h2 id="storyText"></h2>
+
+<div id="envelopeScreen" class="hidden">
+  <p>You have a letter 💌</p>
+  <div class="envelope" onclick="openLetter()">💌</div>
+  <p>Click to open</p>
 </div>
 
-<div class="hearts" id="hearts"></div>
+<div id="proposalScreen" class="hidden">
+  <h2>Will you be my Valentine? ❤️</h2>
+  <button id="yesBtn">Yes ❤️</button>
+  <button id="noBtn">No 🙃</button>
+</div>
+
+<div id="finalScreen" class="hidden">
+  <h1>I love youuu ❤️</h1>
+  <p>Always and forever</p>
+</div>
+
+</div>
+
+<!-- Soft instrumental background music (royalty-free sample) -->
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_6c5f2b7f66.mp3?filename=romantic-piano-110397.mp3" type="audio/mp3">
+</audio>
 
 <script>
-  const noBtn = document.getElementById("noBtn");
-  const yesBtn = document.getElementById("yesBtn");
-  const celebrate = document.getElementById("celebrate");
-  const card = document.getElementById("card");
-  const hearts = document.getElementById("hearts");
+const storyLines = [
+"A boy went on the Hampta Trek...",
+"Far away in the mountains...",
+"While a girl waited for him at home...",
+"Missing him every day...",
+"And on 15 August 2024...",
+"He finally proposed ❤️"
+];
 
-  // Initial position of No button
-  noBtn.style.top = "150px";
-  noBtn.style.left = "180px";
+const storyText = document.getElementById("storyText");
+const envelopeScreen = document.getElementById("envelopeScreen");
+const proposalScreen = document.getElementById("proposalScreen");
+const finalScreen = document.getElementById("finalScreen");
+const music = document.getElementById("music");
 
-  noBtn.addEventListener("mouseenter", () => {
-    const x = Math.random() * 250;
-    const y = Math.random() * 200;
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-  });
+let lineIndex = 0;
+let charIndex = 0;
 
-  yesBtn.addEventListener("click", () => {
-    yesBtn.style.display = "none";
-    noBtn.style.display = "none";
-    celebrate.style.display = "block";
-    launchHearts();
-  });
-
-  function launchHearts() {
-    setInterval(() => {
-      const heart = document.createElement("div");
-      heart.className = "heart";
-      heart.innerHTML = "❤️";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.bottom = "0px";
-      heart.style.fontSize = Math.random() * 20 + 15 + "px";
-      hearts.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 4000);
-    }, 200);
+// typewriter effect
+function typeWriter(){
+  if(lineIndex < storyLines.length){
+    if(charIndex < storyLines[lineIndex].length){
+      storyText.innerHTML += storyLines[lineIndex].charAt(charIndex);
+      charIndex++;
+      setTimeout(typeWriter, 40);
+    } else {
+      storyText.innerHTML += "<br><br>";
+      lineIndex++;
+      charIndex = 0;
+      setTimeout(typeWriter, 900);
+    }
+  } else {
+    setTimeout(()=>{
+      storyText.classList.add("hidden");
+      envelopeScreen.classList.remove("hidden");
+      music.volume = 0.3;
+      music.play();
+    },1000);
   }
+}
+
+typeWriter();
+
+// open envelope
+function openLetter(){
+  envelopeScreen.classList.add("hidden");
+  proposalScreen.classList.remove("hidden");
+
+  noBtn.style.top="120px";
+  noBtn.style.left="200px";
+}
+
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+
+// No button runs away
+noBtn.addEventListener("mouseenter", ()=>{
+  const x=Math.random()*250;
+  const y=Math.random()*200;
+  noBtn.style.left=x+"px";
+  noBtn.style.top=y+"px";
+});
+
+// Yes clicked
+yesBtn.addEventListener("click", ()=>{
+  proposalScreen.classList.add("hidden");
+  finalScreen.classList.remove("hidden");
+  startRoses();
+});
+
+// roses animation
+function startRoses(){
+  setInterval(()=>{
+    const rose=document.createElement("div");
+    rose.className="rose";
+    rose.innerText="🌹";
+    rose.style.left=Math.random()*100+"vw";
+    rose.style.fontSize=(Math.random()*20+20)+"px";
+    document.body.appendChild(rose);
+
+    setTimeout(()=>rose.remove(),5000);
+  },300);
+}
 </script>
 
 </body>
