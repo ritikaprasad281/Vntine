@@ -20,6 +20,7 @@ body{
 
 .card{
   max-width:500px;
+  position:relative;
 }
 
 .hidden{ display:none; }
@@ -41,6 +42,15 @@ button{
   cursor:pointer;
 }
 
+.letter{
+  background:#fff8dc;
+  color:black;
+  padding:25px;
+  border-radius:10px;
+  font-family:"Comic Sans MS", cursive;
+  animation:fadeIn 1s ease-in-out;
+}
+
 .rose{
   position:fixed;
   top:-50px;
@@ -53,6 +63,11 @@ button{
     transform:translateY(110vh) rotate(360deg);
     opacity:0;
   }
+}
+
+@keyframes fadeIn{
+  from{ opacity:0; transform:scale(0.9);}
+  to{ opacity:1; transform:scale(1);}
 }
 </style>
 </head>
@@ -69,6 +84,20 @@ button{
   <p>Click to open</p>
 </div>
 
+<div id="letterScreen" class="hidden">
+  <div class="letter">
+    <p>My love,</p>
+    <p>
+    Every moment with you feels special.  
+    From waiting, missing, and loving…  
+    to every smile we’ve shared.
+    </p>
+    <p>
+    There’s something I want to ask you…
+    </p>
+  </div>
+</div>
+
 <div id="proposalScreen" class="hidden">
   <h2>Will you be my Valentine? ❤️</h2>
   <button id="yesBtn">Yes ❤️</button>
@@ -82,7 +111,6 @@ button{
 
 </div>
 
-<!-- Soft instrumental background music (royalty-free sample) -->
 <audio id="music" loop>
   <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_6c5f2b7f66.mp3?filename=romantic-piano-110397.mp3" type="audio/mp3">
 </audio>
@@ -99,14 +127,16 @@ const storyLines = [
 
 const storyText = document.getElementById("storyText");
 const envelopeScreen = document.getElementById("envelopeScreen");
+const letterScreen = document.getElementById("letterScreen");
 const proposalScreen = document.getElementById("proposalScreen");
 const finalScreen = document.getElementById("finalScreen");
 const music = document.getElementById("music");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
 
 let lineIndex = 0;
 let charIndex = 0;
 
-// typewriter effect
 function typeWriter(){
   if(lineIndex < storyLines.length){
     if(charIndex < storyLines[lineIndex].length){
@@ -123,27 +153,28 @@ function typeWriter(){
     setTimeout(()=>{
       storyText.classList.add("hidden");
       envelopeScreen.classList.remove("hidden");
-      music.volume = 0.3;
-      music.play();
     },1000);
   }
 }
 
 typeWriter();
 
-// open envelope
 function openLetter(){
   envelopeScreen.classList.add("hidden");
-  proposalScreen.classList.remove("hidden");
+  letterScreen.classList.remove("hidden");
 
-  noBtn.style.top="120px";
-  noBtn.style.left="200px";
+  music.volume = 0.3;
+  music.play().catch(()=>{});
+
+  setTimeout(()=>{
+    letterScreen.classList.add("hidden");
+    proposalScreen.classList.remove("hidden");
+
+    noBtn.style.top="120px";
+    noBtn.style.left="200px";
+  },5000);
 }
 
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-
-// No button runs away
 noBtn.addEventListener("mouseenter", ()=>{
   const x=Math.random()*250;
   const y=Math.random()*200;
@@ -151,14 +182,12 @@ noBtn.addEventListener("mouseenter", ()=>{
   noBtn.style.top=y+"px";
 });
 
-// Yes clicked
 yesBtn.addEventListener("click", ()=>{
   proposalScreen.classList.add("hidden");
   finalScreen.classList.remove("hidden");
   startRoses();
 });
 
-// roses animation
 function startRoses(){
   setInterval(()=>{
     const rose=document.createElement("div");
